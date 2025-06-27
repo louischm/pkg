@@ -98,61 +98,61 @@ func (log *Log) SetMaxSize(maxSize int64) {
 	log.maxSize = maxSize
 }
 
-func (log *Log) Info(data string) {
+func (log *Log) Info(data string, v ...any) {
 	log.logger.SetOutput(log.writerOut)
-	log.Print(data, "INFO", false)
+	log.Print(data, "INFO", false, v...)
 
 	if log.fileOut != nil {
 		log.logger.SetOutput(log.fileOut)
-		log.Print(data, "INFO", false)
+		log.Print(data, "INFO", false, v...)
 	}
 }
 
-func (log *Log) Debug(data string) {
+func (log *Log) Debug(data string, v ...any) {
 	log.logger.SetOutput(log.writerOut)
-	log.Print(data, "DEBUG", false)
+	log.Print(data, "DEBUG", false, v...)
 	if log.fileOut != nil {
 		log.logger.SetOutput(log.fileOut)
-		log.Print(data, "DEBUG", false)
+		log.Print(data, "DEBUG", false, v...)
 	}
 }
 
-func (log *Log) Warn(data string) {
+func (log *Log) Warn(data string, v ...any) {
 	log.logger.SetOutput(log.writerOut)
-	log.Print(data, "WARN", false)
+	log.Print(data, "WARN", false, v...)
 	if log.fileOut != nil {
 		log.logger.SetOutput(log.fileOut)
-		log.Print(data, "WARN", false)
+		log.Print(data, "WARN", false, v...)
 	}
 }
 
-func (log *Log) Error(data string) {
+func (log *Log) Error(data string, v ...any) {
 	if log.fileOut != nil {
 		log.logger.SetOutput(log.fileOut)
-		log.Print(data, "ERROR", false)
+		log.Print(data, "ERROR", false, v...)
 	}
 	if log.fileErr != nil {
 		log.logger.SetOutput(log.fileErr)
-		log.Print(data, "ERROR", false)
+		log.Print(data, "ERROR", false, v...)
 	}
 	log.logger.SetOutput(log.writerErr)
-	log.Print(data, "ERROR", true)
+	log.Print(data, "ERROR", true, v...)
 }
 
-func (log *Log) Fatal(data string) {
+func (log *Log) Fatal(data string, v ...any) {
 	if log.fileOut != nil {
 		log.logger.SetOutput(log.fileOut)
-		log.Print(data, "FATAL", false)
+		log.Print(data, "FATAL", false, v...)
 	}
 	if log.fileErr != nil {
 		log.logger.SetOutput(log.fileErr)
-		log.Print(data, "FATAL", false)
+		log.Print(data, "FATAL", false, v...)
 	}
 	log.logger.SetOutput(log.writerErr)
-	log.Print(data, "FATAL", true)
+	log.Print(data, "FATAL", true, v...)
 }
 
-func (log *Log) Print(data string, level string, exit bool) {
+func (log *Log) Print(data string, level string, exit bool, v ...any) {
 	pc, file, line, ok := runtime.Caller(2)
 	parts := strings.Split(runtime.FuncForPC(pc).Name(), ".")
 	pl := len(parts)
@@ -186,11 +186,11 @@ func (log *Log) Print(data string, level string, exit bool) {
 	log.checkLogFileSize()
 
 	if level == "FATAL" && exit {
-		log.logger.Fatalf(data)
+		log.logger.Fatalf(data, v...)
 	} else if level == "ERROR" && exit {
-		log.logger.Panicf(data)
+		log.logger.Panicf(data, v...)
 	} else {
-		log.logger.Printf(data)
+		log.logger.Printf(data, v...)
 	}
 }
 
