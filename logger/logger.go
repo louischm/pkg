@@ -1,7 +1,6 @@
 package logger
 
 import (
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -276,8 +275,6 @@ func getFileNum(filepath string) int {
 			if num < getNumLogFile(file.Name()) {
 				num = getNumLogFile(file.Name())
 			}
-			fmt.Println(file.Name())
-			fmt.Println(num)
 		}
 	}
 
